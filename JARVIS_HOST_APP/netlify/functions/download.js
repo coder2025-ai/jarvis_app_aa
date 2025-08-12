@@ -1,19 +1,23 @@
 exports.handler = async (event, context) => {
-  // Check if a user is logged in
-  if (!context.clientContext || !context.clientContext.user) {
+  const { user } = context.clientContext;
+  
+  if (!user) {
     return {
       statusCode: 401,
-      body: JSON.stringify({ message: "You must be logged in to download this file." }),
+      body: JSON.stringify({ message: 'You must be logged in to download this file.' })
     };
   }
 
-  // If the user is logged in, perform the redirect
-  const downloadUrl = 'https://drive.google.com/uc?export=download&id=1XhJJkBWXkWlJ1FUogw5RthO9Ld0m4TSS';
+  // Use the Google Drive link you provided
+  const fileUrl = 'https://drive.google.com/file/d/1XhJJkBWXkWlJ1FUogw5RthO9Ld0m4TSS/view?usp=sharing';
+
+  const body = JSON.stringify({ url: fileUrl });
 
   return {
-    statusCode: 302, // 302 is the status code for a temporary redirect
+    statusCode: 200,
     headers: {
-      'Location': downloadUrl,
+      'Content-Type': 'application/json',
     },
+    body: body,
   };
 };
