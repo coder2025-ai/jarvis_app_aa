@@ -133,7 +133,7 @@
             const downloadButton = document.getElementById('download-button');
             const loginStatus = document.getElementById('login-status');
 
-            netlifyIdentity.on('init', user => {
+            const handleUser = (user) => {
                 if (user) {
                     loginStatus.textContent = 'You are logged in. Click below to download.';
                     downloadButton.style.display = 'block';
@@ -141,9 +141,12 @@
                     loginStatus.textContent = 'A personal artificial intelligence assistant built for Windows. Log in to download the application.';
                     downloadButton.style.display = 'none';
                 }
-            });
+            };
 
-            // Add the click listener to the button
+            netlifyIdentity.on('init', handleUser);
+            netlifyIdentity.on('login', handleUser);
+            netlifyIdentity.on('logout', handleUser);
+
             downloadButton.addEventListener('click', async () => {
                 const user = netlifyIdentity.currentUser();
                 if (!user) {
