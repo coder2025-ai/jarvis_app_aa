@@ -8,7 +8,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Roboto+Mono:wght@300&display=swap');
 
         :root {
-            --black-bg: #000;
+            --dark-bg: #121212;
             --dark-surface: #1e1e1e;
             --dark-accent: #03dac6;
             --dark-text: #e0e0e0;
@@ -18,14 +18,13 @@
         }
 
         body {
-            background-color: var(--black-bg);
+            background-color: var(--dark-bg);
             color: var(--dark-text);
             font-family: var(--font-main);
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
             text-align: center;
             padding: 20px;
@@ -33,12 +32,13 @@
 
         .navbar {
             width: 100%;
+            background-color: var(--dark-surface);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: fixed;
             top: 0;
             left: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            padding: 1rem 0;
             z-index: 1000;
         }
 
@@ -58,18 +58,17 @@
         .container {
             max-width: 900px;
             width: 100%;
+            background: var(--dark-surface);
             padding: 40px;
-            border-radius: 15px;
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 5rem;
         }
 
         h1 {
             font-family: var(--font-main);
-            font-size: clamp(3rem, 7vw, 4.5rem);
+            font-size: clamp(2.5rem, 6vw, 3rem);
             color: var(--dark-accent);
             margin-bottom: 0.5rem;
             text-transform: none;
@@ -78,24 +77,13 @@
 
         h1 span {
             font-weight: 300;
-            color: var(--dark-text);
         }
 
         p {
             font-size: clamp(1rem, 2vw, 1.2rem);
             color: var(--dark-subtext);
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             line-height: 1.6;
-        }
-
-        .login-box {
-            background-color: var(--dark-surface);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-            margin-bottom: 2rem;
-            width: 80%;
-            max-width: 400px;
         }
 
         .download-button {
@@ -106,14 +94,13 @@
             font-weight: 700;
             text-transform: uppercase;
             text-decoration: none;
-            color: var(--black-bg);
+            color: var(--dark-bg);
             background-color: var(--dark-accent);
             border: none;
             border-radius: 5px;
             transition: all 0.2s ease;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(3, 218, 198, 0.4);
-            margin-top: 20px;
         }
 
         .download-button:hover {
@@ -121,7 +108,6 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(3, 218, 198, 0.6);
         }
-
     </style>
     <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
@@ -132,61 +118,68 @@
         <a href="plugins.html">Plugins</a>
     </nav>
     <div class="container">
-        <h1><span style="color: var(--dark-accent);">J.A.R.V.I.S.</span><span style="color: var(--dark-text);"> Assistant</span></h1>
-        <p id="login-status">Log in or sign up to download the application.</p>
+        <h1><span>J.A.R.V.I.S.</span> Assistant</h1>
+        <p id="login-status">A personal artificial intelligence assistant built for Windows. Log in to download the application.</p>
 
-        <div class="login-box">
-            <div data-netlify-identity-menu></div>
-        </div>
+        <div data-netlify-identity-menu></div>
 
-        <button class="download-button" id="download-button" style="display:none;">
+        <button class="download-button" id="download-button" style="display:none; margin-top: 20px;">
             Download Now
         </button>
     </div>
 
     <script>
-        const downloadButton = document.getElementById('download-button');
-        const loginStatus = document.getElementById('login-status');
+        document.addEventListener('DOMContentLoaded', () => {
+            const downloadButton = document.getElementById('download-button');
+            const loginStatus = document.getElementById('login-status');
 
-        netlifyIdentity.on('init', user => {
-            if (user) {
-                loginStatus.textContent = 'You are logged in. Click below to download.';
-                downloadButton.style.display = 'block';
+            netlifyIdentity.on('init', user => {
+                if (user) {
+                    loginStatus.textContent = 'You are logged in. Click below to download.';
+                    downloadButton.style.display = 'block';
+                } else {
+                    loginStatus.textContent = 'A personal artificial intelligence assistant built for Windows. Log in to download the application.';
+                    downloadButton.style.display = 'none';
+                }
+            });
 
-                downloadButton.addEventListener('click', async () => {
-                    const token = await netlifyIdentity.currentUser().jwt();
-                    
-                    // Fetch the file using the token
-                    fetch('/.netlify/functions/download', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('You must be logged in to download this file.');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        const downloadLink = document.createElement('a');
-                        downloadLink.href = data.url;
-                        downloadLink.download = 'jarvis_app.zip';
-                        document.body.appendChild(downloadLink);
-                        downloadLink.click();
-                        document.body.removeChild(downloadLink);
-                    })
-                    .catch(error => {
-                        alert(error.message);
-                    });
+            // Add the click listener to the button
+            downloadButton.addEventListener('click', async () => {
+                const user = netlifyIdentity.currentUser();
+                if (!user) {
+                    alert('You must be logged in to download this file.');
+                    return;
+                }
+
+                const token = await user.jwt();
+                
+                // Fetch the file using the token
+                fetch('/.netlify/functions/download', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('You must be logged in to download this file.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = data.url;
+                    downloadLink.download = 'jarvis_app.zip';
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                })
+                .catch(error => {
+                    alert(error.message);
                 });
-            } else {
-                loginStatus.textContent = 'Log in or sign up to download the application.';
-                downloadButton.style.display = 'none';
-            }
-        });
+            });
 
-        netlifyIdentity.init();
+            netlifyIdentity.init();
+        });
     </script>
 </body>
 </html>
