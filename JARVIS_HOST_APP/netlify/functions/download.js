@@ -9,7 +9,7 @@ exports.handler = async (event, context) => {
   }
 
   // Use the Google Drive link you provided
-  const fileUrl = 'https://drive.google.com/file/d/1XhJJkBWXkWlJ1FUogw5RthO9Ld0m4TSS/view?usp=sharing';
+  const fileUrl = 'https://drive.google.com/uc?export=download&id=1XhJJkBWXkWlJ1FUogw5RthO9Ld0m4TSS';
 
   const body = JSON.stringify({ url: fileUrl });
 
@@ -21,3 +21,4 @@ exports.handler = async (event, context) => {
     body: body,
   };
 };
+
