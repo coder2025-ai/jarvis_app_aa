@@ -8,7 +8,7 @@ exports.handler = async (event, context) => {
   }
 
   // If the user is logged in, perform the redirect
-  const downloadUrl = 'https://drive.google.com/uc?export=download&id=1S_BSHw0wCW9gozt9Q3qeIIoXKY6pLlIk';
+  const downloadUrl = 'https://drive.google.com/uc?export=download&id=1XhJJkBWXkWlJ1FUogw5RthO9Ld0m4TSS';
 
   return {
     statusCode: 302, // 302 is the status code for a temporary redirect
